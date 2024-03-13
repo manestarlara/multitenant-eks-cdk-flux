@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  PublicSubnetA:
+    Type: String
+    Default: subnet-0661a443325cbfd09
+  PrivateSubnetB:
+    Type: String
+    Default: subnet-058b88b8168ced8d5
+  KeyPair:
+    Type: String
+    Default: TeamC_Key
+  AMI:
+    Type: String
+    Default: ami-04dfd853d88e818e8
+
+Resources:
+  EKSCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      AccessConfig:
+        AuthenticationMode: CONFIG_MAP
+      Name: EKSCluster
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - !ImportValue MyEKSSecurityGroupId
+        SubnetIds:
+          - !Ref PublicSubnetA
+          - !Ref PrivateSubnetB
+      RoleArn: !ImportValue MyEKSRoleArn
+      Version: "1.29"
+
+  EKSNodeA:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AMI
+      InstanceType: t2.medium
+      SecurityGroupIds:
+        - !ImportValue MyEKSSecurityGroupId
+      SubnetId: !Ref PublicSubnetA
+      KeyName: !Ref KeyPair
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+
+          $(/bin/bash -c "$(curl -fsSL https://example.com/common-init-script.sh)")
