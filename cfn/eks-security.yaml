@@ -3,7 +3,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   VPC:
     Type: String
-    Default: vpc-0f8a463d3c84ab974
+    Default: # Add VPC ID
 
 Resources:
   EKSRole:
@@ -24,6 +24,10 @@ Resources:
             Principal:
               Service: eks.amazonaws.com
             Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+        - "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+        - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 
   EKSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -72,8 +76,8 @@ Outputs:
   EKSRoleArn:
     Value: !GetAtt EKSRole.Arn
     Export:
-      Name: MyEKSRoleArn
+      Name: EKSRoleArn
   K8sSecurityGroupId:
     Value: !Ref EKSSecurityGroup
     Export:
-      Name: MyEKSSecurityGroupId
+      Name: EKSSecurityGroupId
