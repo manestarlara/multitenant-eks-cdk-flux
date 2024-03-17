@@ -8,24 +8,22 @@ interface EksStackProps extends cdk.StackProps {
     targetRoleArn: string
 }
 
-//const VpcID = 'vpc-0f8a463d3c84ab974'
-
 export class EksStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: EksStackProps) {
         super(scope, id, props);
 
         const vpc = cdk.aws_ec2.Vpc.fromVpcAttributes(this, 'Vpc', {
-            vpcId: 'vpc-0f8a463d3c84ab974',
-            privateSubnetIds: ['subnet-058b88b8168ced8d5'],
-            publicSubnetIds: ['subnet-0661a443325cbfd09'],
-            availabilityZones: ['eu-central-1']
+            vpcId: 'Your VPC ID',
+            privateSubnetIds: ['Your Private Subnet IDs'],
+            publicSubnetIds: ['Your Public Subnet IDs'],
+            availabilityZones: ['Your preferred Availability Zone']
         })
         const role = cdk.aws_iam.Role.fromRoleArn(this, 'Role', props.targetRoleArn)
 
-         new cdk.aws_eks.Cluster(this, 'eksCluster', {
+        new cdk.aws_eks.Cluster(this, 'eksCluster', {
             version: cdk.aws_eks.KubernetesVersion.V1_29,
-            kubectlLayer: new KubectlLayer(this, 'KubeCTL'),
             defaultCapacity: 0,
+            kubectlLayer: new KubectlLayer(this, 'KubeCTL'),
             clusterName: 'eksCluster',
             vpc: vpc,
             role: role,
@@ -38,7 +36,7 @@ export class EksStack extends cdk.Stack {
             launchTemplateData: {
                 instanceType: 't2.medium',
                 securityGroupIds: [props.targetSecurityGroupID],
-                keyName: 'TeamC_Key',
+                keyName: 'Your EC2 KeyPair Name',
                 userData: cdk.Fn.base64(userData)
             }
         });

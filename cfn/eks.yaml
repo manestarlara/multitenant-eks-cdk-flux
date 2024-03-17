@@ -40,8 +40,19 @@ Resources:
           - !ImportValue EKSSecurityGroupId
         KeyName: !Ref KeyPair
         UserData: !Base64 |
+          Content-Type: multipart/mixed; boundary="==BOUNDARY=="
+
+          --==BOUNDARY==
+          Content-Type: text/cloud-config; charset="us-ascii"
+
+          # cloud-config script goes here
+          # Note: If you don't have cloud-config, you can remove this part
+
+          --==BOUNDARY==
+          Content-Type: text/x-shellscript; charset="us-ascii"
+
           #!/bin/bash
-          
+
           # Update the package repository and install required dependencies
           sudo apt-get update -y
           sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
@@ -81,3 +92,5 @@ Resources:
 
           # Add kubectl bash completion
           echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+          --==BOUNDARY==--

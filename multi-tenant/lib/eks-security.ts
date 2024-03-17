@@ -1,6 +1,5 @@
 import * as cdk from "aws-cdk-lib";
 import {Construct} from "constructs";
-import {aws_iam} from "aws-cdk-lib";
 
 export class EksSecurity extends cdk.Stack {
     public readonly eksRole: string
@@ -24,7 +23,7 @@ export class EksSecurity extends cdk.Stack {
         this.eksRole = eksRole.roleArn;
 
         const eksSecurityGroup = new cdk.aws_ec2.SecurityGroup(this, 'eksSecurityGroup', {
-            vpc: cdk.aws_ec2.Vpc.fromLookup(this, 'VPC', {vpcId: 'vpc-0f8a463d3c84ab974'}),
+            vpc: cdk.aws_ec2.Vpc.fromLookup(this, 'VPC', {vpcId: 'Your VPC ID'}),
             description: 'Security group for Amazon EKS cluster',
             allowAllOutbound: true,
         });
